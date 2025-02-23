@@ -3,8 +3,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import streamlit as st
+import os
 
-day_df = pd.read_csv('main_data.csv')
+file_path = os.path.join(os.path.dirname(__file__), 'main_data.csv')
+
+if os.path.exists(file_path):
+    st.success("File ditemukan!")
+else:
+    st.error("File tidak ditemukan!")
+
+day_df = pd.read_csv(file_path)
 
 st.title("Bike Sharing Dashboard")
 st.markdown("""
