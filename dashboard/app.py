@@ -14,6 +14,14 @@ else:
 
 day_df = pd.read_csv(file_path)
 
+hour_file_path = os.path.join(os.path.dirname(__file__), 'hour.csv')
+if os.path.exists(hour_file_path):
+    st.success("File hour.csv ditemukan!")
+else:
+    st.error("File hour.csv tidak ditemukan!")
+
+hour_df = pd.read_csv(hour_file_path)
+    
 day_df['dteday'] = pd.to_datetime(day_df['dteday'])
 day_df['season'] = day_df['season'].map({1: 'Spring', 2: 'Summer', 3: 'Fall', 4: 'Winter'})
 
@@ -64,6 +72,29 @@ monthly_rentals.plot(kind='line', marker='o', ax=ax)
 ax.set_title('Total Peminjaman Sepeda per Bulan (Filtered)')
 ax.set_ylabel('Jumlah Peminjaman')
 plt.xticks(rotation=45)
+st.pyplot(fig)
+
+#Jumlah Pengguna di Berbagai Musim
+st.header("Distribusi Jumlah Pengguna Sepeda di Setiap Musim")
+fig, ax = plt.subplots(figsize=(10, 5))
+sns.barplot(data=day_df, x='season', y='cnt', palette='coolwarm', ax=ax)
+ax.set_title("Distribusi Jumlah Pengguna Sepeda di Setiap Musim")
+ax.set_xlabel("Musim (Spring, Summer, Fall, Winter)")
+ax.set_ylabel("Jumlah Pengguna")
+st.pyplot(fig)
+
+#tren penyewaan sepeda dari pagi hingga malam
+
+hourly_agg = hour_df.groupby('hr')['cnt'].mean()
+
+st.header("Tren Penyewaan Sepeda dari Pagi hingga Malam")
+fig, ax = plt.subplots(figsize=(10, 6))
+ax.plot(hourly_agg, marker='o', color='coral')
+ax.set_title('Tren Penyewaan Sepeda dari Pagi hingga Malam')
+ax.set_xlabel('Jam')
+ax.set_ylabel('Rata-rata Penyewaan Sepeda')
+ax.set_xticks(range(0, 24))
+ax.grid(True)
 st.pyplot(fig)
 
 # Insight
